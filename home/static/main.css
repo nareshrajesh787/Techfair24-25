@@ -1,0 +1,22 @@
+.rtd {
+  text-decoration: none;
+}
+
+body {
+  background-color: white;
+  color: #ff7575;
+}
+
+.nav-items nav a {
+  margin-left: 10px;
+}
+
+.nav-items nav a:hover {
+  background-color: #ff5c5c;
+  color: #ff7575;
+  border-radius: 40%;
+}
+
+.bg-blue {
+  background-color: #ff7575;
+}
