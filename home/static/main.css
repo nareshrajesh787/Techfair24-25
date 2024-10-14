@@ -2,7 +2,11 @@
   text-decoration: none;
 }
 
-body {
+.nav-link {
+  color: rgb(247, 244, 244);
+}
+
+/*body {
   background-color: white;
   color: #ff7575;
 }
@@ -19,4 +23,4 @@ body {
 
 .bg-blue {
   background-color: #ff7575;
-}
+}*/
