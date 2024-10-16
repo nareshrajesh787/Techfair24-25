@@ -19,4 +19,4 @@ class Event(models.Model):
     host = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.name
+        return self.event_name
