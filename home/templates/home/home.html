@@ -4,8 +4,19 @@
   <h1>
     Welcome to the home page!
   </h1>
-  <p>
-    This is the home page.
-  </p>
+  <div class="container">
+    <ul>
+    {% for event in events %}
+      <li>
+        <h3> {{event.event_name}} </h3>
+        <p> {{event.event_description}} </p>
+        <p> {{event.event_date}} </p>
+        <p> {{event.host}} </p>
+      </li>
+    {% empty %}
+      <p>No events available</p>
+    {% endfor %}
+    </ul>
+  </div>
 </div>
 {% endblock content %}

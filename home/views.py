@@ -10,12 +10,9 @@ import os
 class HomeView(ListView):
   model = Event
   template_name = 'home/home.html'
-  paginate_by = 10
-
-  def get_context_data(self, **kwargs):
-    context = super().get_context_data(**kwargs)
-    context["now"] = timezone.now()
-    return context
+  context_object_name = "events"
+  ordering = ['-event_date']
+  paginate_by = 7
 
 @login_required
 def create_event(request):
@@ -24,6 +21,7 @@ def create_event(request):
     if form.is_valid():
       event = form.save(commit=False)
       event.host = request.user
+      event.save()
       return redirect('home')
 
   else:
