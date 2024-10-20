@@ -6,6 +6,22 @@
   color: rgb(247, 244, 244);
 }
 
+// <uniquifier>: Use a unique and descriptive class name
+// <weight>: Use a value from 100 to 1000
+
+.afacad-flux-<uniquifier> {
+  font-family: "Afacad Flux", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: <weight>;
+  font-style: normal;
+  font-variation-settings:
+    "slnt" 0;
+}
+
+.af-font {
+  font-family: "Afacad Flux", sans-serif;
+}
+
 /*body {
   background-color: white;
   color: #ff7575;

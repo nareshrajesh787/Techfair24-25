@@ -4,19 +4,17 @@
   <h1>
     Welcome to the home page!
   </h1>
-  <div class="container">
-    <ul>
     {% for event in events %}
-      <li>
-        <h3> {{event.event_name}} </h3>
-        <p> {{event.event_description}} </p>
-        <p> {{event.event_date}} </p>
-        <p> {{event.host}} </p>
-      </li>
+      <div class="card my-4" style="width: 30rem;">
+        <div class="card-header">{{event.event_date}}</div>
+        <div class="card-body">
+          <h5 class="card-title">{{event.event_name}}</h5>
+          <h6 class="card-subtitle mb-2 text-body-secondary">{{event.host}}</h6>
+          <p class="card-text">{{event.event_description}}</p>
+        </div>
+      </div>
     {% empty %}
       <p>No events available</p>
     {% endfor %}
-    </ul>
-  </div>
 </div>
 {% endblock content %}
