@@ -2,17 +2,36 @@
   text-decoration: none;
 }
 
-.nav-link {
-  color: rgb(247, 244, 244);
+.nav-link:hover {
+  background-color: rgb(247, 244, 244);
+  color: black;
 }
 
-// <uniquifier>: Use a unique and descriptive class name
-// <weight>: Use a value from 100 to 1000
+.nav-link {
+  color: rgb(247, 244, 244);
+  transition: background-color 0.3s ease;
+  height: 100%;
+  border-radius: 10%;
+}
 
-.afacad-flux-<uniquifier> {
+.btn:hover {
+    background-color: rgb(247, 244, 244)!important;
+    color: black;
+    transition: background-color 0.3s ease;
+}
+
+/*.navbar {
+  padding: 0;
+}/*
+
+/* <uniquifier>: Use a unique and descriptive class name
+// <weight>: Use a value from 100 to 1000*/
+
+.afacad-flux-body {
   font-family: "Afacad Flux", sans-serif;
+  font-size: larger;
   font-optical-sizing: auto;
-  font-weight: <weight>;
+  font-weight: unset;
   font-style: normal;
   font-variation-settings:
     "slnt" 0;
