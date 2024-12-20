@@ -1,0 +1,228 @@
+/* PALLETTE #1
+Penn Red (Dark Red): #950000
+Fire Brick (Light Red): #C1121F
+White Smoke: #F7F4F4
+Prussian Blue (Dark Blue): #003856
+Indigo Dye (Light Blue): #00517D
+*/
+
+/* PALLETTE #2
+--white: #F7F4F4;
+--dark-red: #C1121F;
+--light-red: #EB1717;
+--dark-blue: #034A87;
+--light-blue: #005AAE;
+*/
+
+/* PALLETTE #3
+Engineering Orange (Dark Red): #C71010
+Red CYMK (Light Red): #EB1717
+Tangelo (Orange): #FF4400
+White Smoke (White): #F7F4F4
+Black: #000000
+*/
+
+:root {
+    --white: #F7F4F4;
+    --dark-red: #C71010;
+    --light-red: #EB1717;
+    --orange: #FF4400;
+    --black: #000000;
+  }
+
+  /*REMOVE TEXT DECORATION*/
+  .rtd {
+    text-decoration: none;
+  }
+
+  h1 {
+    color: var(--light-red);
+  }
+
+  /*CARD SETTINGS*/
+  .card {
+    width: 13rem;
+    background-color: var(--white);
+
+  }
+
+  .card-header {
+    color: var(--orange);
+  }
+
+  .card-title {
+    color: var(--light-red);
+    font-weight: 700; font-size: 23px
+  }
+
+  .card-subtitle {
+    color: var(--black);
+    opacity: 0.95;
+  }
+
+  .card-text {
+    color: var(--dark-red)
+  }
+
+  .card {
+    position: relative;
+  }
+
+  @property --angle {
+    syntax: "<angle>";
+    initial-value: 0deg;
+    inherits: false;
+  }
+
+  .card:hover::after, .card:hover::before {
+    content: '';
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background-image: conic-gradient(from var(--angle), transparent 50%, var(--orange));
+    top: 50%;
+    left: 50%;
+    translate: -50% -50%;
+    z-index: -1;
+    padding: 5px;
+    border-radius: var(--bs-border-radius);
+    box-sizing: content-box;
+    animation: 2s spin linear infinite;
+  }
+
+  @keyframes spin {
+    from {
+      --angle: 0deg;
+    }
+    to {
+      --angle: 360deg;
+    }
+  }
+
+  .card::before {
+    filter: blur(1.5rem);
+    opacity: 0.75;
+  }
+
+    /*.card {
+      position:relative;
+      padding: 4px;
+      background-image:
+      linear-gradient(var(--light-red), var(--light-red)),
+      linear-gradient(var(--light-red), var(--light-red)),
+      linear-gradient(var(--light-red), var(--light-red)),
+      linear-gradient(var(--light-red), var(--light-red));
+      background-position: 0 0, 0 0, 0 100%, 0 100%;
+      background-size: 4px 0%, 0% 4px, 0% 4px, 4px 0%;
+      background-color:transparent;
+      background-repeat:no-repeat;
+      transition:0.6s linear;
+    }
+    .card:before {
+      content:"";
+      position:absolute;
+      z-index:-1;
+      top:0;
+      right:0;
+      left:0;
+      bottom:0;
+      border:4px solid var(--light-blue);
+    }
+
+    .card:hover {
+      background-position: 0 100%, 0 0, 0 100%, 100% 0;
+      background-size: 4px 0%, 100% 4px, 0% 4px,4px 0%;
+      animation: animate 2s linear infinite 0.6s;
+    }
+
+    @keyframes animate {
+      0% {
+      background-position: 0 100%, 0 0, 0 100%, 100% 0;
+      background-size: 4px 0%, 100% 4px, 0% 4px,4px 0%;
+      }
+      40% {
+      background-position: 0 100%, 100% 0, 100% 100%, 100% 0;
+      background-size: 4px 0%, 100% 4px, 0% 4px,4px 100%;
+      }
+      60% {
+      background-position: 0 100%, 100% 0, 100% 100%, 100% 100%;
+      background-size: 4px 0%, 0% 4px, 100% 4px,4px 100%
+      }
+      70% {
+      background-position: 0 100%, 100% 0, 0% 100%, 100% 100%;
+      background-size: 4px 100%, 0% 4px, 100% 4px,4px 0%;
+      }
+      80% {
+      background-position: 0% 0%, 0% 0, 0% 100%, 100% 100%;
+      background-size: 4px 100%, 0% 4px, 0% 4px,4px 0%;
+      }
+      100% {
+      background-position: 0% 0%, 0 0, 0 100%, 100% 100%;
+      background-size: 4px 0%, 100% 4px, 0% 4px,4px 0%
+      }
+    }*/
+
+
+
+  /*NAVBAR-BRAND SETTINGS*/
+  .navbar-brand {
+    color: var(--orange);
+  }
+
+  .navbar-brand:hover {
+    color: var(--orange);
+  }
+  .navbar-brand::after {
+    content: '';
+    display: block;
+    width: 0;
+    height: 4px;
+    transition: width .3s;
+    background-color: var(--orange);
+  }
+
+  .navbar-brand:hover::after {
+    width: 100%;
+    transition: width .3s;
+  }
+
+  /*NAV-LINK SETTINGS*/
+  .nav-link {
+    color: var(--dark-red);
+  }
+  .nav-link:hover {
+    color: var(--light-red);
+  }
+
+  .nav-link::after {
+    content: '';
+    display: block;
+    width: 0;
+    height: 4px;
+    transition: width .3s;
+    background-color: var(--light-red);
+  }
+
+  .nav-link:hover::after {
+    width: 100%;
+    transition: width .3s;
+  }
+
+  .btn:hover {
+      background-color: var(--white);
+      color: var(--light-red);
+      transition: background-color 0.3s ease;
+  }
+
+  /*FONT SETTING*/
+  .sarala-regular {
+    font-family: "Sarala", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+  }
+
+  .sarala-bold {
+    font-family: "Sarala", sans-serif;
+    font-weight: 700;
+    font-style: normal;
+  }

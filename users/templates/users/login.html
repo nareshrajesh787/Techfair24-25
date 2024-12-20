@@ -2,11 +2,14 @@
 {% load crispy_forms_tags %}
 {% load crispy_forms_filters %}
 {% block content %}
-<div class="container">
+<div class="container mt-4">
     <form method="POST">
         {% csrf_token %}
         {{ form|crispy }}
-        <button class='btn bg-light-subtle' type="submit">Login</button>
+        <div class="d-flex justify-content-start">
+            <button class='btn' type="submit">Login</button>
+            <a href="{% url 'register' %}" class="nav-link mt-2 ms-2">No account? Make a new one</a>
+        </div>
     </form>
 </div>
 {% endblock %}

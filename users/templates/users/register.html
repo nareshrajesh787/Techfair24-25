@@ -2,11 +2,11 @@
 {% load crispy_forms_tags %}
 {% load crispy_forms_filters %}
 {% block content %}
-<div class="container">
+<div class="container mt-4">
     <form method="POST">
         {% csrf_token %}
         {{ form|crispy }}
-        <button class='btn bg-light-subtle' type="submit">Register</button>
+        <button class='btn' type="submit">Register</button>
     </form>
 </div>
 {% endblock %}

@@ -1,61 +1,302 @@
+/* PALLETTE #1
+Penn Red (Dark Red): #950000
+Fire Brick (Light Red): #C1121F
+White Smoke: #F7F4F4
+Prussian Blue (Dark Blue): #003856
+Indigo Dye (Light Blue): #00517D
+*/
+
+/* PALLETTE #2
+--white: #F7F4F4;
+--dark-red: #C1121F;
+--light-red: #EB1717;
+--dark-blue: #034A87;
+--light-blue: #005AAE;
+*/
+
+/* PALLETTE #3
+Engineering Orange (Dark Red): #C71010
+Red CYMK (Light Red): #EB1717
+Tangelo (Orange): #FF4400
+White Smoke (White): #F7F4F4
+Black: #000000
+*/
+
+:root {
+  --white: #F7F4F4;
+  --dark-red: #C71010;
+  --light-red: #EB1717;
+  --orange: #FF4400;
+  --black: #000000;
+  --bs-body-bg: #000000;
+}
+
+body {
+  background-image: linear-gradient(to right, Black, #2c2c2c);
+  min-height: 100vh;
+}
+
+.navbar {
+  background-image: linear-gradient(to right, rgb(0, 0, 0, 0.9), rgb(44, 44, 44, 0.9));
+  opacity: 0.9;
+}
+
+/*REMOVE TEXT DECORATION*/
 .rtd {
   text-decoration: none;
 }
 
-.nav-link:hover {
-  background-color: rgb(247, 244, 244);
-  color: black;
+h1 {
 }
 
-.nav-link {
-  color: rgb(247, 244, 244);
-  transition: background-color 0.3s ease;
+/*CARD SETTINGS*/
+.card {
+  width: 13rem;
+  border: none!important;
+  box-shadow: 8px 8px 13px rgba(247, 244, 244, 0.1);
+  transition: 0.15s ease-in-out;
+}
+
+.card:hover {
+  box-shadow: 8px 8px 13px rgba(235, 23, 23, 0.3);
+}
+
+.card-header {
+  border: none!important;
+  background-color: var(--white);
+  color: var(--black);
+}
+
+.card-title {
+  font-weight: 700; font-size: 23px
+}
+
+.card-subtitle {
+  opacity: 0.95;
+}
+
+.card-text {
+}
+
+.card {
+  position: relative;
+}
+
+@property --angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+/*.card:hover::after, .card:hover::before {
+  content: '';
+  position: absolute;
   height: 100%;
-  border-radius: 10%;
+  width: 100%;
+  background-image: conic-gradient(from var(--angle), transparent 55%, var(--light-red));
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  z-index: -1;
+  padding: 5px;
+  border-radius: var(--bs-border-radius);
+  box-sizing: content-box;
+  animation: 5s spin linear infinite;
+}*/
+
+/*.card:after, .card:before {
+  content: '';
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  background-image: conic-gradient(#464646 , #464646);
+  background-image: conic-gradient(var(--light-red), var(--light-red));
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  z-index: -1;
+  padding: 1px;
+  border-radius: var(--bs-border-radius);
+  box-sizing: content-box;
+}*/
+
+@keyframes spin {
+  from {
+    --angle: 0deg;
+  }
+  to {
+    --angle: 360deg;
+  }
+}
+
+.card:hover::before {
+  filter: blur(1.5rem);
+  opacity: 0.4;
+}
+
+.card::before {
+  filter: blur(0.67rem);
+  opacity: 0.9;
+}
+
+  /*.card {
+    position:relative;
+    padding: 4px;
+    background-image:
+    linear-gradient(var(--light-red), var(--light-red)),
+    linear-gradient(var(--light-red), var(--light-red)),
+    linear-gradient(var(--light-red), var(--light-red)),
+    linear-gradient(var(--light-red), var(--light-red));
+    background-position: 0 0, 0 0, 0 100%, 0 100%;
+    background-size: 4px 0%, 0% 4px, 0% 4px, 4px 0%;
+    background-color:transparent;
+    background-repeat:no-repeat;
+    transition:0.6s linear;
+  }
+  .card:before {
+    content:"";
+    position:absolute;
+    z-index:-1;
+    top:0;
+    right:0;
+    left:0;
+    bottom:0;
+    border:4px solid var(--light-blue);
+  }
+
+  .card:hover {
+    background-position: 0 100%, 0 0, 0 100%, 100% 0;
+    background-size: 4px 0%, 100% 4px, 0% 4px,4px 0%;
+    animation: animate 2s linear infinite 0.6s;
+  }
+
+  @keyframes animate {
+    0% {
+    background-position: 0 100%, 0 0, 0 100%, 100% 0;
+    background-size: 4px 0%, 100% 4px, 0% 4px,4px 0%;
+    }
+    40% {
+    background-position: 0 100%, 100% 0, 100% 100%, 100% 0;
+    background-size: 4px 0%, 100% 4px, 0% 4px,4px 100%;
+    }
+    60% {
+    background-position: 0 100%, 100% 0, 100% 100%, 100% 100%;
+    background-size: 4px 0%, 0% 4px, 100% 4px,4px 100%
+    }
+    70% {
+    background-position: 0 100%, 100% 0, 0% 100%, 100% 100%;
+    background-size: 4px 100%, 0% 4px, 100% 4px,4px 0%;
+    }
+    80% {
+    background-position: 0% 0%, 0% 0, 0% 100%, 100% 100%;
+    background-size: 4px 100%, 0% 4px, 0% 4px,4px 0%;
+    }
+    100% {
+    background-position: 0% 0%, 0 0, 0 100%, 100% 100%;
+    background-size: 4px 0%, 100% 4px, 0% 4px,4px 0%
+    }
+  }*/
+
+
+
+/*NAVBAR-BRAND SETTINGS*/
+.navbar-brand{
+  color: var(--white);
+  background-color: none!important;
+}
+
+.navbar-brand:hover{
+  color: var(--white);
+}
+.navbar-brand::after{
+  content: '';
+  display: block;
+  width: 0;
+  height: 4px;
+  transition: width .3s;
+  background-color: var(--light-red);
+}
+
+.navbar-brand:hover::after{
+  width: 100%;
+  transition: width .3s;
+}
+
+/*NAV-LINK SETTINGS*/
+.nav-link {
+  color: var(--white);
+}
+.nav-link:hover {
+  color: var(--white);
+}
+
+.nav-link::after {
+  content: '';
+  display: block;
+  width: 0;
+  height: 4px;
+  transition: width .3s;
+  background-color: var(--light-red);
+}
+
+.nav-link:hover::after {
+  width: 100%;
+  transition: width .3s;
+}
+
+/*BUTTON SETTINGS*/
+.btn {
+  color: var(--white);
+  box-shadow: 5px 8px 8px rgba(56,56,56,0.4);
+  transition: 0.15s ease-in-out;
+}
+
+.btn::after{
+  content: '';
+  display: block;
+  width: 0;
+  height: 4px;
+  transition: width .3s;
+  background-color: var(--light-red);
+}
+
+.btn:hover::after {
+  width: 100%;
+  transition: width .3s;
 }
 
 .btn:hover {
-    background-color: rgb(247, 244, 244)!important;
-    color: black;
-    transition: background-color 0.3s ease;
+  color: var(--white);
+  box-shadow: 5px 8px 8px rgba(235, 23, 23, 0.2)!important;
 }
 
-/*.navbar {
-  padding: 0;
-}/*
+/*PARTICLE EFFECT*/
+#particles-js {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: -1; /* Behind other content */
+  background-color: transparent; /* Optional background color */
+  pointer-events: none;
+}
 
-/* <uniquifier>: Use a unique and descriptive class name
-// <weight>: Use a value from 100 to 1000*/
+/*FORM SETTINGS*/
+.form-check-input:checked {
+  background-color: var(--light-red);
+  border-color: var(--light-red);
+}
 
-.afacad-flux-body {
-  font-family: "Afacad Flux", sans-serif;
-  font-size: larger;
-  font-optical-sizing: auto;
-  font-weight: unset;
+/*FONT SETTING*/
+.sarala-regular {
+  font-family: "Sarala", sans-serif;
+  font-weight: 400;
   font-style: normal;
-  font-variation-settings:
-    "slnt" 0;
 }
 
-.af-font {
-  font-family: "Afacad Flux", sans-serif;
+.sarala-bold {
+  font-family: "Sarala", sans-serif;
+  font-weight: 700;
+  font-style: normal;
 }
-
-/*body {
-  background-color: white;
-  color: #ff7575;
-}
-
-.nav-items nav a {
-  margin-left: 10px;
-}
-
-.nav-items nav a:hover {
-  background-color: #ff5c5c;
-  color: #ff7575;
-  border-radius: 40%;
-}
-
-.bg-blue {
-  background-color: #ff7575;
-}*/
