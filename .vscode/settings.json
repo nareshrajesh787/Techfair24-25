@@ -1,0 +1,7 @@
+{
+    "html.autoClosingTags": true,
+    "emmet.includeLanguages": {
+        "django-html": "html"
+    },
+    "python.analysis.autoImportCompletions": true
+}

@@ -19,12 +19,16 @@ from django.urls import path
 from home import views as home_views
 from users import views as user_views
 from django.contrib.auth import views as auth_views
+from django.conf.urls.static import static
+from django.conf import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', home_views.HomeView.as_view(), name='home'),
+    path('', home_views.assignment_list, name='home'),
     path('login/', auth_views.LoginView.as_view(template_name='users/login.html'), name='login'),
+    path('assignment/<int:pk>/', home_views.DetailView, name='detail'),
+    path('assignment/review/<int:pk>/', home_views.SubmitReview, name='review_form'),
     path('logout/', user_views.logout_view, name='logout'),
     path('register/', user_views.register_view, name='register'),
-    path('create_event/', home_views.create_event, name='create_event')
-]
+    path('upload_assignment/', home_views.upload_assignment, name='upload_assignment')
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

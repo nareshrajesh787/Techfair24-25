@@ -1,64 +1,52 @@
-from typing import List
-from django.shortcuts import render, redirect
-from .forms import EventForm
+from django.shortcuts import get_object_or_404, render, redirect
+from django.db.models import Avg
 from django.contrib.auth.decorators import login_required
-from django.views.generic import *
-from django.utils import timezone
-from .models import Event
-import os
-import operator
-from functools import reduce
-from django.db.models import Q
-
-
-
-# Create your views here.
-class HomeView(ListView):
-    model = Event
-    template_name = 'home/home.html'
-    context_object_name = 'events'
-    ordering = ['-event_date']
-
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        show_past = self.request.GET.get('show_past') == 'true'
-        event_type_filter = self.request.GET.get('event_type')
-        search_query = self.request.GET.get('search', '')
-
-        if not show_past:
-            queryset = queryset.filter(event_date__gte=timezone.now())
-
-        if event_type_filter and event_type_filter != 'All':
-            queryset = queryset.filter(event_type=event_type_filter)
-
-        if search_query:
-            queryset = queryset.filter(
-                Q(event_name__icontains=search_query) |
-                Q(event_description__icontains=search_query)
-            )
-
-
-        return queryset
-
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['show_past'] = self.request.GET.get('show_past') == 'true'
-        context['selected_event_type'] = self.request.GET.get('event_type', '')
-        context['search_query'] = self.request.GET.get('search', '')
-        return context
+from .forms import AssignmentForm, ReviewForm
+from .models import Assignment, Review
 
 @login_required
-def create_event(request):
-  if request.method == 'POST':
-    form = EventForm(request.POST)
-    if form.is_valid():
-      event = form.save(commit=False)
-      event.host = request.user
-      event.save()
-      return redirect('home')
+def upload_assignment(request):
+    if request.method == 'POST':
+        form = AssignmentForm(request.POST, request.FILES)
+        if form.is_valid():
+            assignment = form.save(commit=False)
+            assignment.author = request.user
+            assignment.save()
+            return redirect('home')
+    else:
+        form = AssignmentForm()
+    return render(request, 'home/upload_assignment.html', {'form': form})
 
-  else:
-    form = EventForm()
+def assignment_list(request):
+    assignments = Assignment.objects.all().order_by('-date_uploaded')
+    return render(request, 'home/home.html', {'assignments': assignments})
 
-  return render(request, 'home/create_event.html', {'form': form})
+def DetailView(request, pk):
+    assignment = get_object_or_404(Assignment, pk=pk)
+    reviews = assignment.reviews.all()
+    avg_rating = reviews.aggregate(models.Avg('rating'))['rating_avg'] or 0
+
+    return render(request, 'home/detail.html', {
+        'assignment': assignment,
+        'reviews': reviews,
+        'avg_rating': avg_rating
+    })
+
+def SubmitReview(request, pk):
+    assignment = get_object_or_404(Assignment, pk=pk)
+
+    if request.method == 'POST':
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            review = form.save(commit=False)
+            review.assignment = assignment
+            review.reviewer = request.user
+            review.save()
+            return redirect('detail', assignment.pk)
+    else:
+        form = ReviewForm()
+
+    return render(request, 'home/submit_review.html', {
+        'assignment' : assignment,
+        'form': form
+    })

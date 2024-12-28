@@ -1,0 +1,13 @@
+{% extends 'home/base.html' %}
+{% block content %}
+<div class="container">
+    <h1> Title: {{assignment.title}}</h1>
+    <h4> Course: {{assignment.title}}</p>
+    <h4> Assignment Type: {{assignment.assignment_type}}</h3>
+    <p>Description: {{assignment.description}}</p>
+    <p>Uploaded Assignment: <a href="{{assignment.uploaded_assignment.url}}" target="_blank">View</a></p>
+    {% if assignment.uploaded_rubric.url != null %}
+    <p>Uploaded Rubric: <a href="{{assignment.uploaded_rubric.url}}" target="_blank">View</a></p>
+    {% endif %}
+</div>
+{% endblock %}

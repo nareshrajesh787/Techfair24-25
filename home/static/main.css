@@ -73,6 +73,7 @@ h1 {
 
 .card-subtitle {
   opacity: 0.95;
+  color: var(--light-red);
 }
 
 .card-text {

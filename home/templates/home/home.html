@@ -1,42 +1,24 @@
 {% extends 'home/base.html' %}
 {% block content %}
 <div class="container">
-  <h1 class="mt-1">
-    {% if show_past %}
-        All Events
-    {% else %}
-        Upcoming Events
-    {% endif %}
-  </h1>
   <div class="d-flex justify-content-between">
-  <form method="get" class="d-flex align-items-center mb-3" id="filterForm">
-    <input type="text" name="search" placeholder="Search events..." class="form-control me-3" value="{{ search_query }}" style="width: 30rem">
-    <div class="form-check form-switch me-3">
-      <label class="form-check-label" for="showPastToggle">Show Past Events</label>
-      <input class="form-check-input" type="checkbox" id="showPastToggle" name="show_past" value="true" {% if show_past %}checked{% endif %} onchange="document.getElementById('filterForm').submit();">
-    </div>
-    <select name="event_type" class="form-select me-3" onchange="document.getElementById('filterForm').submit();" style="width: 10rem">
-      <option value="">All Event Types</option>
-      <option value="SPORTS" {% if selected_event_type == 'Sports' %}selected{% endif %}>Sports</option>
-      <option value="CULTURAL" {% if selected_event_type == 'Cultural' %}selected{% endif %}>Cultural</option>
-      <option value="CELEBRATION" {% if selected_event_type == 'Celebration' %}selected{% endif %}>Celebration</option>
-      <option value="ACADEMIC" {% if selected_event_type == 'Academic' %}selected{% endif %}>Academic</option>
-    </select>
-  </form>
-  <a href="{% url 'create_event' %}" class="btn mb-2">Create Event</a>
+    <h1 class="mt-1"> Assignments </h1>
+    <a href="{% url 'upload_assignment' %}" class="btn mt-3">Upload Assignment</a>
   </div>
-  <div id="main" class="d-flex flex-wrap justify-content-evenly align-items-stretch">
-    {% for event in events %}
-      <div class="card mx-4 my-4">
-        <div class="card-header">{{event.event_date}}</div>
+  <div id="main" class="d-flex flex-wrap justify-content-evenly align-items-stretch mt-3">
+    {% for assignment in assignments %}
+      <div class="mx-4 my-4">
+      <a class="rtd card" href="{% url 'detail' assignment.id %}">
+        <div class="card-header">{{assignment.assignment_type}}</div>
         <div class="card-body">
-          <h5 class="card-title">{{event.event_name}}</h5>
-          <h6 class="card-subtitle mb-2">{{event.host}}</h6>
-          <p class="card-text">{{event.event_description}}</p>
+          <h5 class="card-title">{{assignment.title}}</h5>
+          <h6 class="card-subtitle mb-2">{{assignment.course}}</h6>
+          <p class="card-text">{{assignment.description}}</p>
         </div>
+      </a>
       </div>
     {% empty %}
-      <p>No events available</p>
+      <p>No assignments available</p>
     {% endfor %}
   </div>
 </div>

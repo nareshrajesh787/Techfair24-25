@@ -1,13 +1,26 @@
 from django import forms
-from .models import Event
+from .models import Assignment, Review
 
-class EventForm(forms.ModelForm):
+class AssignmentForm(forms.ModelForm):
     class Meta:
-        model = Event
-        fields = ['event_name', 'event_description', 'event_date', 'event_type']
+        model = Assignment
+        fields = [
+            'title', 'description', 'course',
+            'assignment_type', 'uploaded_assignment', 'uploaded_rubric'
+        ]
         widgets = {
-            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Event Name'}),
-            'event_description': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Event Description', 'rows': 3}),
-            'event_date': forms.DateTimeInput(attrs={ 'class':'form-control', 'type': 'datetime-local'}),
-            'event_type': forms.Select(attrs={'class': 'form-control'})
+            'description': forms.Textarea(attrs={'rows': 4}),
+            'course': forms.TextInput(attrs={'placeholder': 'What is it for (eg. AP Lang, Science Fair, etc.)'}),
+            'assignment_type': forms.Select(choices=Assignment.TYPE_CHOICES),
+        }
+
+class ReviewForm(forms.ModelForm):
+    class Meta:
+        model = Review
+        fields = [
+            'feedback', 'rating'
+        ]
+        widgets = {
+            'feedback': forms.Textarea(attrs={'rows': 5}),
+            'rating': forms.RadioSelect(choices=[(i, f"{i} Star{'s' if i > 1 else ''}") for i in range(1,6)])
         }
