@@ -24,7 +24,7 @@ def assignment_list(request):
 def DetailView(request, pk):
     assignment = get_object_or_404(Assignment, pk=pk)
     reviews = assignment.reviews.all()
-    avg_rating = reviews.aggregate(models.Avg('rating'))['rating_avg'] or 0
+    avg_rating = reviews.aggregate(Avg('rating'))['rating__avg'] or 0
 
     return render(request, 'home/detail.html', {
         'assignment': assignment,
