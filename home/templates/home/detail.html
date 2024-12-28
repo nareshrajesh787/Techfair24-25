@@ -9,5 +9,27 @@
     {% if assignment.uploaded_rubric.url != null %}
     <p>Uploaded Rubric: <a href="{{assignment.uploaded_rubric.url}}" target="_blank">View</a></p>
     {% endif %}
+    <h2>Reviews</h2>
+    <div>
+        {% for review in reviews %}
+            <div class="card my-3">
+                <div class="card-body">
+                    <h5 class="card-title">{{ review.reviewer.username }}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">
+                        {% for i in range(review.rating) %}
+                            <i class="fa fa-star text-warning"></i>
+                        {% endfor %}
+                        {% for i in range(5-review.rating) %}
+                            <i class="fa fa-star text-muted"></i>
+                        {% endfor %}
+                    </h6>
+                    <p class="card-text">{{ review.feedback }}</p>
+                    <p class="text-end"><small>Reviewed on {{ review.date_reviewed }}</small></p>
+                </div>
+            </div>
+            {% empty %}
+                <p>No reviews yet. Be the first to review!</p>
+            {% endfor %}
+    </div>
 </div>
 {% endblock %}
