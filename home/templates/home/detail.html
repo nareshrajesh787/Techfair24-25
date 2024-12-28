@@ -16,11 +16,12 @@
                 <div class="card-body">
                     <h5 class="card-title">{{ review.reviewer.username }}</h5>
                     <h6 class="card-subtitle mb-2 text-muted">
-                        {% for i in range(review.rating) %}
-                            <i class="fa fa-star text-warning"></i>
-                        {% endfor %}
-                        {% for i in range(5-review.rating) %}
-                            <i class="fa fa-star text-muted"></i>
+                        {% for i in star_range %}
+                            {% if i < review.rating %}
+                                <i class="fa fa-star text-warning"></i> 
+                            {% else %}
+                                <i class="fa fa-star text-muted"></i> 
+                            {% endif %}
                         {% endfor %}
                     </h6>
                     <p class="card-text">{{ review.feedback }}</p>

@@ -26,14 +26,19 @@ def DetailView(request, pk):
     reviews = assignment.reviews.all()
     avg_rating = reviews.aggregate(Avg('rating'))['rating__avg'] or 0
 
+    star_range = range(5)
+
     return render(request, 'home/detail.html', {
         'assignment': assignment,
         'reviews': reviews,
-        'avg_rating': avg_rating
+        'avg_rating': avg_rating,
+        'star_range': star_range
     })
 
 def SubmitReview(request, pk):
     assignment = get_object_or_404(Assignment, pk=pk)
+
+    star_range = range(5)
 
     if request.method == 'POST':
         form = ReviewForm(request.POST)
@@ -48,5 +53,6 @@ def SubmitReview(request, pk):
 
     return render(request, 'home/submit_review.html', {
         'assignment' : assignment,
+        'star_range' : star_range,
         'form': form
     })
