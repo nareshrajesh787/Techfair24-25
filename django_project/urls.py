@@ -25,10 +25,21 @@ from django.conf import settings
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', home_views.assignment_list, name='home'),
+
     path('login/', auth_views.LoginView.as_view(template_name='users/login.html'), name='login'),
-    path('assignment/<int:pk>/', home_views.DetailView, name='detail'),
-    path('assignment/review/<int:pk>/', home_views.SubmitReview, name='review_form'),
     path('logout/', user_views.logout_view, name='logout'),
     path('register/', user_views.register_view, name='register'),
-    path('upload_assignment/', home_views.upload_assignment, name='upload_assignment')
+
+    path('upload_assignment/', home_views.upload_assignment, name='upload_assignment'),
+    path('assignment/<int:pk>/', home_views.DetailView, name='detail'),
+    path('assignment/<int:pk>/update/', home_views.update_assignment, name='update_assignment'),
+    path('assignment/<int:pk>/delete/', home_views.delete_assignment, name='delete_assignment'),
+    path('assignment/<int:pk>/define-rubric/', home_views.define_rubric, name='define_rubric'),
+    path('assignment/<int:pk>/update-rubric/', home_views.update_rubric, name='update_rubric'),
+
+    path('review/<int:pk>/', home_views.ReviewDetail, name='review_detail'),
+    path('assignment/<int:pk>/review', home_views.SubmitReview, name='review_form'),
+    path('review/<int:pk>/update/', home_views.update_review, name='update_review'),
+    path('review/<int:pk>/delete/', home_views.delete_review, name='delete_review'),
+
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

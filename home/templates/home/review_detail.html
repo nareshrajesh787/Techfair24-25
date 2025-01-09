@@ -1,0 +1,40 @@
+{% extends 'home/base.html' %}
+{% block content %}
+<div class="container">
+    <h1> Title: {{review.assignment.title}}</h1>
+    <div>
+        <div class="my-3">
+            <h3>Reviewer: {{ review.reviewer.username }}</h3>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Criterion</th>
+                        <th>Description</th>
+                        <th>Max Points</th>
+                        <th>Score</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for detail in rubric_details %}
+                        <tr>
+                            <td>{{ detail.criterion }}</td>
+                            <td>{{detail.description}}</td>
+                            <td>{{ detail.max_points }}</td>
+                            <td>{{ detail.score }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <p>Final Percentage: {{ review.final_percent }}%</p>
+            <p>Feedback: {{ review.feedback }}</p>
+        </div>
+        {% if user == review.reviewer %}
+    <div class="btn-group mb-3">
+        <a href="{% url 'update_review' review.pk %}" class="btn">Edit Review</a>
+        <a href="{% url 'delete_review' review.pk %}" class="btn">Delete Review</a>
+    </div>
+{% endif %}
+    </div>
+    <a href="{% url 'detail' review.assignment.id %}" class="btn">Back to Assignment</a>
+</div>
+{% endblock %}

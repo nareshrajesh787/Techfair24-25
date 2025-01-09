@@ -3,11 +3,34 @@
 {% load crispy_forms_filters %}
 {% block content %}
 <div class="container mt-4">
-    <form method="POST">
+    <h2>Reviewing {{ assignment.title }}</h2>
+    <form method="POST" class="form-control">
         {% csrf_token %}
-        {{ form|crispy }}
-        <button class='btn' type="submit">Post</button>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Criterion</th>
+                    <th>Description</th>
+                    <th>Max Points</th>
+                    <th>Score</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for detail in rubric_details %}
+                    <tr>
+                        <td>{{ detail.criterion }}</td>
+                        <td>{{detail.description}}</td>
+                        <td>{{ detail.max_points }}</td>
+                        <td>
+                            <input type="number" name="{{ detail.criterion }}" min="0" max="{{ detail.max_points }}" required>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <textarea name="feedback" placeholder="Enter your feedback here" required class="input-group-text"></textarea>
+        <button type="submit" class="btn">Submit Review</button>
     </form>
-    <a href="{% url 'detail' assignment.id %}"></a>
+    <a href="{% url 'detail' assignment.id %}" class="rtd btn">Back</a>
 </div>
 {% endblock %}

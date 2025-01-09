@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.validators import MaxValueValidator
 
 class Assignment(models.Model):
     TYPE_CHOICES = [
@@ -14,7 +15,8 @@ class Assignment(models.Model):
     course = models.CharField(max_length=100)
     assignment_type = models.CharField(max_length=50, choices=TYPE_CHOICES)
     uploaded_assignment = models.FileField(upload_to='assignments/')
-    uploaded_rubric = models.FileField(upload_to='rubrics/', blank=True, null=True)
+    num_criteria = models.PositiveSmallIntegerField(validators=[MaxValueValidator(12)], default=4)
+    rubric = models.JSONField(default=dict)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     date_uploaded = models.DateTimeField(auto_now_add=True)
 
@@ -25,8 +27,11 @@ class Review(models.Model):
     assignment = models.ForeignKey(Assignment, related_name="reviews", on_delete=models.CASCADE)
     reviewer = models.ForeignKey(User, on_delete=models.CASCADE)
     feedback = models.TextField()
+    rubric_scores = models.JSONField(default=dict)
+    rubric_description = models.JSONField(default=dict)
+    final_percent = models.FloatField()
     date_reviewed = models.DateTimeField(auto_now_add=True)
-    rating = models.PositiveSmallIntegerField(choices=[(i, f"{i} Star{'s' if i > 1 else ''}") for i in range(1,6)])
+    rating = models.PositiveSmallIntegerField(blank=True, null=True)
 
     def __str__(self):
-        return f"{self.reviewer.username} - {self.rating} stars"
+        return f"{self.assignment.title} reviewed by {self.reviewer.username}"

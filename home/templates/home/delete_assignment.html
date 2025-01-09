@@ -1,0 +1,12 @@
+{% extends "home/base.html" %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Delete Assignment</h2>
+    <p>Are you sure you want to delete "{{ assignment.title }}"?</p>
+    <form method="POST">
+        {% csrf_token %}
+        <button class="btn" type="submit">Delete</button>
+        <a href="{% url 'detail' assignment.pk %}" class="btn">Cancel</a>
+    </form>
+</div>
+{% endblock %}

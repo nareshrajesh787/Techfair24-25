@@ -283,6 +283,31 @@ h1 {
   pointer-events: none;
 }
 
+/*STAR WIDGET*/
+.rating {
+  direction: rtl;
+  display: inline-flex;
+}
+
+.rating input {
+  display: none;
+}
+
+.rating label {
+  cursor: pointer;
+  font-size: 2rem;
+  color: #ddd;
+}
+
+.rating label:hover,
+.rating label:hover ~ label {
+  color: #ffc107;
+}
+
+.rating input:checked ~ label {
+  color: #ffc107;
+}
+
 /*FORM SETTINGS*/
 .form-check-input:checked {
   background-color: var(--light-red);

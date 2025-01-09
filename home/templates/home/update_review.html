@@ -1,0 +1,35 @@
+{% extends "home/base.html" %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Update Review for {{ assignment.title }}</h2>
+    <form method="POST">
+        {% csrf_token %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Criterion</th>
+                    <th>Description</th>
+                    <th>Max Points</th>
+                    <th>Score</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for detail in rubric_details %}
+                <tr>
+                    <td>{{ detail.criterion }}</td>
+                    <td>{{ detail.description }}</td>
+                    <td>{{ detail.max_points }}</td>
+                    <td>
+                        <input type="number" name="{{ detail.criterion }}"
+                               value="{{ detail.score }}" min="0"
+                               max="{{ detail.max_points }}" required>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <textarea name="feedback" required class="form-control mb-3">{{ review.feedback }}</textarea>
+        <button class="btn" type="submit">Update Review</button>
+    </form>
+</div>
+{% endblock %}

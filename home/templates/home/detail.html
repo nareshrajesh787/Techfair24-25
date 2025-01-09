@@ -5,32 +5,54 @@
     <h4> Course: {{assignment.title}}</p>
     <h4> Assignment Type: {{assignment.assignment_type}}</h3>
     <p>Description: {{assignment.description}}</p>
-    <p>Uploaded Assignment: <a href="{{assignment.uploaded_assignment.url}}" target="_blank">View</a></p>
-    {% if assignment.uploaded_rubric.url != null %}
-    <p>Uploaded Rubric: <a href="{{assignment.uploaded_rubric.url}}" target="_blank">View</a></p>
-    {% endif %}
+    <p><a href="{{assignment.uploaded_assignment.url}}" target="_blank" class="btn">View Assignment</a></p>
+    <p><a class="btn" data-bs-toggle="collapse" href="#rubricCollapse" role="button" aria-expanded="false" aria-controls="rubricCollapse"> View Rubric </a></p>
+    <div class="collapse" id="rubricCollapse">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Criterion</th>
+                        <th>Description</th>
+                        <th>Max Points</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for detail in rubric_details %}
+                        <tr>
+                            <td>{{ detail.criterion }}</td>
+                            <td>{{detail.description}}</td>
+                            <td>{{ detail.max_points }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+    </div>
     <h2>Reviews</h2>
     <div>
-        {% for review in reviews %}
-            <div class="card my-3">
-                <div class="card-body">
-                    <h5 class="card-title">{{ review.reviewer.username }}</h5>
-                    <h6 class="card-subtitle mb-2 text-muted">
-                        {% for i in star_range %}
-                            {% if i < review.rating %}
-                                <i class="fa fa-star text-warning"></i> 
-                            {% else %}
-                                <i class="fa fa-star text-muted"></i> 
-                            {% endif %}
-                        {% endfor %}
-                    </h6>
-                    <p class="card-text">{{ review.feedback }}</p>
-                    <p class="text-end"><small>Reviewed on {{ review.date_reviewed }}</small></p>
-                </div>
+        {% for review in assignment.reviews.all %}
+            <div class="my-3 border-top border-bottom border-start ps-3 pt-3">
+                <a href="{% url 'review_detail' review.id %}" class="rtd text-white">
+                <h3>Reviewer: {{ review.reviewer.username }}</h3>
+                <ul>
+                    {% for criterion, score in review.rubric_scores.items %}
+                        <li>{{ criterion }}: {{ score }}</li>
+                    {% endfor %}
+                </ul>
+                <p>Final Percentage: {{ review.final_percent }}%</p>
+                <p>Feedback: {{ review.feedback }}</p>
+                </a>
             </div>
             {% empty %}
                 <p>No reviews yet. Be the first to review!</p>
-            {% endfor %}
+        {% endfor %}
     </div>
+    <a href="{% url 'review_form' assignment.id %}" class="btn">Write a Review</a>
+    {% if user == assignment.author %}
+    <div class="btn-group mb-3">
+        <a href="{% url 'update_assignment' assignment.pk %}" class="btn">Edit Assignment</a>
+        <a href="{% url 'delete_assignment' assignment.pk %}" class="btn">Delete Assignment</a>
+        <a href="{% url 'update_rubric' assignment.pk %}" class="btn">Edit Rubric</a>
+    </div>
+    {% endif %}
 </div>
 {% endblock %}

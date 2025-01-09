@@ -1,0 +1,23 @@
+{% extends "home/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Update Rubric for {{ assignment.title }}</h2>
+    <form method="POST">
+        {% csrf_token %}
+        {{ rubric_formset.management_form }}
+        {% for form in rubric_formset %}
+            <div class="mb-3">
+                {{ form|crispy }}
+                {% if form.errors %}
+                    <div class="alert alert-danger">
+                        {{ form.errors }}
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+        <button class="btn" type="submit">Update Rubric</button>
+        <a href="{% url 'detail' assignment.pk %}" class="btn">Cancel</a>
+    </form>
+</div>
+{% endblock %}
