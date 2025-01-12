@@ -1,13 +1,43 @@
 {% extends "home/base.html" %}
 {% load crispy_forms_tags %}
-{% load crispy_forms_filters %}
 {% block content %}
-<div class="container mt-4">
-    <h2 class="mb-3">Upload Assignment</h2>
-    <form method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ assignment_form|crispy }}
-        <button class='btn' type="submit">Post</button>
-    </form>
+<div class="container py-4">
+    <div class="detail-card">
+        <div class="mb-4">
+            <h1 class="mb-1">Upload Assignment</h1>
+            <p class="text-muted">Step 1 of 2: Enter Assignment Details</p>
+        </div>
+
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-md-8">
+                    {{ assignment_form.title|as_crispy_field }}
+                    {{ assignment_form.description|as_crispy_field }}
+                </div>
+                <div class="col-md-4">
+                    {{ assignment_form.course|as_crispy_field }}
+                    {{ assignment_form.assignment_type|as_crispy_field }}
+                    {{ assignment_form.num_criteria|as_crispy_field }}
+                </div>
+            </div>
+
+            <div class="upload-section p-4 my-4 rounded">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-cloud-upload-alt fa-2x me-3 text-primary"></i>
+                    <div>
+                        {{ assignment_form.uploaded_assignment|as_crispy_field }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center">
+                <a href="{% url 'home' %}" class="btn btn-secondary">Cancel</a>
+                <button class="btn" type="submit">
+                    <i class="fas fa-arrow-right me-2"></i>Next: Define Rubric
+                </button>
+            </div>
+        </form>
+    </div>
 </div>
 {% endblock %}

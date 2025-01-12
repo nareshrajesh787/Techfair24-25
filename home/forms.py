@@ -1,3 +1,4 @@
+from cProfile import label
 from django import forms
 from .models import Assignment, Review
 
@@ -12,7 +13,11 @@ class AssignmentForm(forms.ModelForm):
             'description': forms.Textarea(attrs={'rows': 4}),
             'course': forms.TextInput(attrs={'placeholder': 'What is it for (eg. AP Lang, Science Fair, etc.)'}),
             'assignment_type': forms.Select(choices=Assignment.TYPE_CHOICES),
-            'num_criteria': forms.NumberInput(attrs={'placeholder':'Number of Criteria: eg.4'})
+            'num_criteria': forms.NumberInput(attrs={'min': 1, 'max': 10}),
+        }
+        labels = {
+            'num_criteria': 'Number of Rubric Criteria',
+            'uploaded_assignment': 'Upload Assignment File',
         }
 
 class RubricForm(forms.Form):

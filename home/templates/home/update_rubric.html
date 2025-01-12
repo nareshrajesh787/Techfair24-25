@@ -1,23 +1,53 @@
 {% extends "home/base.html" %}
 {% load crispy_forms_tags %}
 {% block content %}
-<div class="container mt-4">
-    <h2>Update Rubric for {{ assignment.title }}</h2>
-    <form method="POST">
-        {% csrf_token %}
-        {{ rubric_formset.management_form }}
-        {% for form in rubric_formset %}
-            <div class="mb-3">
-                {{ form|crispy }}
-                {% if form.errors %}
-                    <div class="alert alert-danger">
-                        {{ form.errors }}
+<div class="container py-4">
+    <div class="detail-card">
+        <div class="mb-4">
+            <h1 class="mb-1">Update Rubric</h1>
+            <p class="text-muted">Edit rubric for {{ assignment.title }}</p>
+        </div>
+
+        <form method="POST">
+            {% csrf_token %}
+            {{ rubric_formset.management_form }}
+
+            <div class="row g-4">
+                {% for form in rubric_formset %}
+                <div class="col-md-6">
+                    <div class="criterion-card">
+                        <div class="criterion-header mb-3">
+                            <h5>Criterion {{ forloop.counter }}</h5>
+                        </div>
+                        <div class="mb-3">
+                            {{ form.criterion|as_crispy_field }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form.description|as_crispy_field }}
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Maximum Points</label>
+                            <input type="number"
+                                   class="form-control"
+                                   value="{{ form.max_points.value }}"
+                                   readonly
+                                   disabled>
+                            {{ form.max_points.as_hidden }}
+                        </div>
                     </div>
-                {% endif %}
+                </div>
+                {% endfor %}
             </div>
-        {% endfor %}
-        <button class="btn" type="submit">Update Rubric</button>
-        <a href="{% url 'detail' assignment.pk %}" class="btn">Cancel</a>
-    </form>
+
+            <div class="d-flex justify-content-between align-items-center mt-4">
+                <a href="javascript:history.back()" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Back
+                </a>
+                <button class="btn" type="submit">
+                    <i class="fas fa-save me-2"></i>Save Changes
+                </button>
+            </div>
+        </form>
+    </div>
 </div>
 {% endblock %}

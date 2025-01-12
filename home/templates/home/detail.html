@@ -1,58 +1,113 @@
 {% extends 'home/base.html' %}
 {% block content %}
-<div class="container">
-    <h1> Title: {{assignment.title}}</h1>
-    <h4> Course: {{assignment.title}}</p>
-    <h4> Assignment Type: {{assignment.assignment_type}}</h3>
-    <p>Description: {{assignment.description}}</p>
-    <p><a href="{{assignment.uploaded_assignment.url}}" target="_blank" class="btn">View Assignment</a></p>
-    <p><a class="btn" data-bs-toggle="collapse" href="#rubricCollapse" role="button" aria-expanded="false" aria-controls="rubricCollapse"> View Rubric </a></p>
-    <div class="collapse" id="rubricCollapse">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Criterion</th>
-                        <th>Description</th>
-                        <th>Max Points</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for detail in rubric_details %}
-                        <tr>
-                            <td>{{ detail.criterion }}</td>
-                            <td>{{detail.description}}</td>
-                            <td>{{ detail.max_points }}</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-    </div>
-    <h2>Reviews</h2>
-    <div>
-        {% for review in assignment.reviews.all %}
-            <div class="my-3 border-top border-bottom border-start ps-3 pt-3">
-                <a href="{% url 'review_detail' review.id %}" class="rtd text-white">
-                <h3>Reviewer: {{ review.reviewer.username }}</h3>
-                <ul>
-                    {% for criterion, score in review.rubric_scores.items %}
-                        <li>{{ criterion }}: {{ score }}</li>
-                    {% endfor %}
-                </ul>
-                <p>Final Percentage: {{ review.final_percent }}%</p>
-                <p>Feedback: {{ review.feedback }}</p>
+<div class="container py-5">
+
+    <!-- Assignment Header -->
+    <div class="detail-card">
+        <div class="d-flex justify-content-between align-items-start">
+            <div>
+                <h1 class="mb-2">{{ assignment.title }}</h1>
+                <p class="meta-info">
+                    <i class="fas fa-shapes me-2"></i>{{ assignment.assignment_type }}
+                    <i class="fas fa-book ms-3 me-2"></i>{{ assignment.course }}
+                    <i class="fas fa-calendar ms-3 me-2"></i>{{ assignment.date_uploaded|date:"M d, Y" }}
+                </p>
+            </div>
+            {% if user == assignment.author %}
+            <div class="btn-group mt-1">
+                <a href="{% url 'update_assignment' assignment.pk %}" class="btn btn-secondary btn-sm">
+                    <i class="fas fa-edit me-1"></i>Edit
+                </a>
+                <a href="{% url 'delete_assignment' assignment.pk %}" class="btn btn-secondary btn-sm">
+                    <i class="fas fa-trash me-1"></i>Delete
                 </a>
             </div>
+            {% endif %}
+        </div>
+
+        <div class="description-text mb-1">
+            {{ assignment.description }}
+        </div>
+
+        <div class="row">
+            <a href="{{ assignment.uploaded_assignment.url }}" target="_blank" class="btn">
+                <i class="fas fa-folder-open me-2"></i>View Assignment
+            </a>
+        </div>
+    </div>
+
+    <!-- Rubric Section -->
+    <div class="detail-card">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2 class="mb-0">Rubric</h2>
+            {% if user == assignment.author %}
+            <a href="{% url 'update_rubric' assignment.pk %}" class="btn btn-secondary btn-sm">
+                <i class="fas fa-edit me-1"></i>Edit Rubric
+            </a>
+            {% endif %}
+        </div>
+        <table class="table rubric-table">
+            <thead>
+                <tr>
+                    <th>Criterion</th>
+                    <th>Description</th>
+                    <th>Max Points</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for detail in rubric_details %}
+                <tr>
+                    <td class="fw-bold">{{ detail.criterion }}</td>
+                    <td class="rubric-description">{{ detail.description }}</td>
+                    <td>{{ detail.max_points }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Reviews Section -->
+    <div class="detail-card">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="mb-0">Reviews</h2>
+            <a href="{% url 'review_form' assignment.pk %}" class="btn">
+                <i class="fas fa-plus me-1"></i>Add Review
+            </a>
+        </div>
+
+        <div class="row">
+            {% for review in reviews %}
+            <div class="col-md-6 mb-3">
+                <div class="review-card">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                            <h5 class="mb-1">{{ review.reviewer }}</h5>
+                            <small class="meta-info">{{ review.created_at|date:"M d, Y" }}</small>
+                        </div>
+                        {% if review.final_percent < 70 %}
+                            <span class="score-badge bg-danger">{{ review.final_percent|floatformat:1 }}%</span>
+                        {% elif review.final_percent < 80 %}
+                            <span class="score-badge bg-warning">{{ review.final_percent|floatformat:1 }}%</span>
+                        {% elif review.final_percent < 90 %}
+                            <span class="score-badge bg-success bg-opacity-75">{{ review.final_percent|floatformat:1 }}%</span>
+                        {% else %}
+                            <span class="score-badge bg-success">{{ review.final_percent|floatformat:1 }}%</span>
+                        {% endif %}
+                    </div>
+                    <div class="mb-3">
+                        <p>{{ review.feedback|truncatechars:305 }}</p>
+                    </div>
+                    <a href="{% url 'review_detail' review.pk %}" class="btn btn-sm">
+                        View Details
+                    </a>
+                </div>
+            </div>
             {% empty %}
-                <p>No reviews yet. Be the first to review!</p>
-        {% endfor %}
+            <div class="col-12">
+                <p class="text-center text-muted">No reviews yet</p>
+            </div>
+            {% endfor %}
+        </div>
     </div>
-    <a href="{% url 'review_form' assignment.id %}" class="btn">Write a Review</a>
-    {% if user == assignment.author %}
-    <div class="btn-group mb-3">
-        <a href="{% url 'update_assignment' assignment.pk %}" class="btn">Edit Assignment</a>
-        <a href="{% url 'delete_assignment' assignment.pk %}" class="btn">Delete Assignment</a>
-        <a href="{% url 'update_rubric' assignment.pk %}" class="btn">Edit Rubric</a>
-    </div>
-    {% endif %}
 </div>
 {% endblock %}

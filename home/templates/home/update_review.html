@@ -1,35 +1,104 @@
 {% extends "home/base.html" %}
+{% load custom_filters %}
 {% block content %}
-<div class="container mt-4">
-    <h2>Update Review for {{ assignment.title }}</h2>
-    <form method="POST">
-        {% csrf_token %}
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Criterion</th>
-                    <th>Description</th>
-                    <th>Max Points</th>
-                    <th>Score</th>
-                </tr>
-            </thead>
-            <tbody>
+<div class="container py-4">
+    <div class="detail-card">
+        <div class="mb-4">
+            <h1 class="mb-1">Update Review</h1>
+            <p class="text-muted">Edit your review for {{ assignment.title }}</p>
+        </div>
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <!-- Rubric Scoring Section -->
+            <div class="row g-4 mb-4">
                 {% for detail in rubric_details %}
-                <tr>
-                    <td>{{ detail.criterion }}</td>
-                    <td>{{ detail.description }}</td>
-                    <td>{{ detail.max_points }}</td>
-                    <td>
-                        <input type="number" name="{{ detail.criterion }}"
-                               value="{{ detail.score }}" min="0"
-                               max="{{ detail.max_points }}" required>
-                    </td>
-                </tr>
+                <div class="col-md-6">
+                    <div class="criterion-card">
+                        <div class="criterion-header mb-3">
+                            <h5>{{ detail.criterion }}</h5>
+                        </div>
+                        <p class="text-muted mb-3">{{ detail.description }}</p>
+                        <div class="score-input">
+                            <label class="form-label">Score (max: {{ detail.max_points }})</label>
+                            <input type="number"
+                                   name="{{ detail.criterion }}"
+                                   class="form-control"
+                                   min="0"
+                                   max="{{ detail.max_points }}"
+                                   value="{{ detail.score }}"
+                                   required
+                                   oninput="updateProgress(this, {{ detail.max_points }}, '{{ detail.criterion }}')"
+                            >
+                            <div class="progress mt-2" style="height: 8px;">
+                                <div class="progress-bar"
+                                     id="progress-{{ detail.criterion }}"
+                                     role="progressbar"
+                                     style="width: {{ detail.score|percentage:detail.max_points }}%">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 {% endfor %}
-            </tbody>
-        </table>
-        <textarea name="feedback" required class="form-control mb-3">{{ review.feedback }}</textarea>
-        <button class="btn" type="submit">Update Review</button>
-    </form>
+            </div>
+
+            <!-- Feedback Section -->
+            <div class="feedback-card">
+                <h4 class="mb-3">Feedback</h4>
+                <textarea name="feedback"
+                          class="form-control"
+                          rows="4"
+                          required>{{ review.feedback }}</textarea>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="d-flex justify-content-between align-items-center mt-4">
+                <a href="javascript:history.back()" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Back
+                </a>
+                <button type="submit" class="btn">
+                    <i class="fas fa-save me-2"></i>Save Changes
+                </button>
+            </div>
+        </form>
+    </div>
 </div>
+
+<script>
+function updateProgress(input, maxPoints, criterionId) {
+    const value = parseInt(input.value) || 0;
+    const percentage = (value / maxPoints) * 100;
+    const progressBar = document.getElementById(`progress-${criterionId}`);
+
+    progressBar.style.width = `${percentage}%`;
+
+    if (percentage < 70) {
+        progressBar.className = 'progress-bar bg-danger';
+    } else if (percentage < 80) {
+        progressBar.className = 'progress-bar bg-warning';
+    } else if (percentage < 90) {
+        progressBar.className = 'progress-bar bg-success bg-opacity-75';
+    } else {
+        progressBar.className = 'progress-bar bg-success';
+    }
+
+    if (value > maxPoints) {
+        input.value = maxPoints;
+        updateProgress(input, maxPoints, criterionId);
+    }
+}
+
+// Initialize progress bars on load
+window.onload = function() {
+    {% for detail in rubric_details %}
+        updateProgress(
+            document.querySelector('input[name="{{ detail.criterion }}"]'),
+            {{ detail.max_points }},
+            '{{ detail.criterion }}'
+        );
+    {% endfor %}
+}
+</script>
 {% endblock %}

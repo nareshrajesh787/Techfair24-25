@@ -2,17 +2,39 @@
 {% load crispy_forms_tags %}
 {% load crispy_forms_filters %}
 {% block content %}
-<div class="container mt-4">
-    <h2>Define Rubric</h2>
-    <form method="POST">
-        {% csrf_token %}
-        {{ rubric_formset.management_form }}
-        {% for form in rubric_formset %}
-            <div class="mb3">
-                {{ form|crispy }}
+<div class="container py-4">
+    <div class="detail-card">
+        <div class="mb-4">
+            <h1 class="mb-1">Define Rubric</h1>
+            <p class="text-muted">Step 2 of 2: Create Rubric Criteria for {{ assignment.title }}</p>
+        </div>
+
+        <form method="POST">
+            {% csrf_token %}
+            {{ rubric_formset.management_form }}
+
+            <div class="row g-4">
+                {% for form in rubric_formset %}
+                <div class="col-md-6">
+                    <div class="criterion-card">
+                        <div class="criterion-header mb-3">
+                            <h5>Criterion {{ forloop.counter }}</h5>
+                        </div>
+                        {{ form|crispy }}
+                    </div>
+                </div>
+                {% endfor %}
             </div>
-        {% endfor %}
-        <button class='btn' type="submit">Post</button>
-    </form>
+
+            <div class="d-flex justify-content-between align-items-center mt-4">
+                <a href="javascript:history.back()" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Back
+                </a>
+                <button class="btn" type="submit">
+                    <i class="fas fa-check me-2"></i>Complete Assignment
+                </button>
+            </div>
+        </form>
+    </div>
 </div>
 {% endblock %}

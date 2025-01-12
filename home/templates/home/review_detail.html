@@ -1,40 +1,86 @@
 {% extends 'home/base.html' %}
+{% load custom_filters %}
 {% block content %}
-<div class="container">
-    <h1> Title: {{review.assignment.title}}</h1>
-    <div>
-        <div class="my-3">
-            <h3>Reviewer: {{ review.reviewer.username }}</h3>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Criterion</th>
-                        <th>Description</th>
-                        <th>Max Points</th>
-                        <th>Score</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for detail in rubric_details %}
-                        <tr>
-                            <td>{{ detail.criterion }}</td>
-                            <td>{{detail.description}}</td>
-                            <td>{{ detail.max_points }}</td>
-                            <td>{{ detail.score }}</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            <p>Final Percentage: {{ review.final_percent }}%</p>
-            <p>Feedback: {{ review.feedback }}</p>
+<div class="container py-5">
+    <!-- Review Header -->
+    <div class="review-header">
+        <div class="d-flex justify-content-between align-items-start">
+            <div>
+                <h2 class="mb-2">Review for {{ assignment.title }}</h2>
+                <p class="mb-0">
+                    <i class="fas fa-user me-2"></i>{{ review.reviewer }}
+                    <i class="fas fa-calendar ms-3 me-2"></i>{{ review.date_reviewed|date:"M d, Y" }}
+                </p>
+            </div>
+            <div class="score-circle">
+                {{ review.final_percent|floatformat:0 }}%
+            </div>
         </div>
-        {% if user == review.reviewer %}
-    <div class="btn-group mb-3">
-        <a href="{% url 'update_review' review.pk %}" class="btn">Edit Review</a>
-        <a href="{% url 'delete_review' review.pk %}" class="btn">Delete Review</a>
     </div>
-{% endif %}
+
+    <!-- Action Buttons -->
+    {% if user == review.reviewer %}
+    <div class="mb-4 text-end">
+        <a href="{% url 'update_review' review.pk %}" class="btn me-2">
+            <i class="fas fa-edit me-1"></i>Edit Review
+        </a>
+        <a href="{% url 'delete_review' review.pk %}" class="btn">
+            <i class="fas fa-trash me-1"></i>Delete Review
+        </a>
     </div>
-    <a href="{% url 'detail' review.assignment.id %}" class="btn">Back to Assignment</a>
+    {% endif %}
+
+    <!-- Rubric Scores -->
+    <div class="row g-4">
+        {% for detail in rubric_details %}
+        <div class="col-md-6">
+            <div class="criterion-card">
+                <div class="mb-3 criterion-header">
+                    <h5>{{ detail.criterion }}</h5>
+                </div>
+                <p class="text-muted mb-3">{{ detail.description }}</p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="score-indicator">
+                        {{ detail.score }} / {{ detail.max_points }}
+                    </div>
+                    <div class="progress" style="height: 8px; width: 60%;">
+                    {% if detail.score|percentage:detail.max_points < 70 %}
+                        <div class="progress-bar bg-danger"
+                            style="width: {{detail.score|percentage:detail.max_points}}%">
+                        </div>
+                    {% elif detail.score|percentage:detail.max_points < 80 %}
+                        <div class="progress-bar bg-warning"
+                            style="width: {{detail.score|percentage:detail.max_points}}%">
+                        </div>
+                    {% elif detail.score|percentage:detail.max_points < 90 %}
+                        <div class="progress-bar bg-success bg-opacity-75"
+                            style="width: {{detail.score|percentage:detail.max_points}}%">
+                        </div>
+                    {% else %}
+                        <div class="progress-bar bg-success"
+                            style="width: {{detail.score|percentage:detail.max_points}}%">
+                        </div>
+                    {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Feedback Section -->
+    <div class="feedback-card">
+        <h4 class="mb-4">Feedback</h4>
+        <div class="description-text">
+            {{ review.feedback|linebreaks }}
+        </div>
+    </div>
+
+    <!-- Back Button -->
+    <div class="text-center mt-4">
+        <a href="{% url 'detail' assignment.pk %}" class="btn">
+            <i class="fas fa-arrow-left me-2"></i>Back to Assignment
+        </a>
+    </div>
 </div>
 {% endblock %}

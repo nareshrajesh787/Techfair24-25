@@ -1,15 +1,28 @@
 {% extends "home/base.html" %}
 {% load crispy_forms_tags %}
-{% load crispy_forms_filters %}
 {% block content %}
-<div class="container mt-4">
-    <form method="POST">
-        {% csrf_token %}
-        {{ form|crispy }}
-        <div class="d-flex justify-content-start">
-            <button class='btn' type="submit">Login</button>
-            <a href="{% url 'register' %}" class="nav-link mt-2 ms-2">No account? Make a new one</a>
+<div class="container py-4">
+    <div class="detail-card" style="max-width: 500px; margin: 0 auto;">
+        <div class="text-center mb-4">
+            <i class="fas fa-user-circle fa-3x text-primary mb-3"></i>
+            <h2 class="mb-3">Welcome Back</h2>
+            <p class="text-muted">Sign In To Continue</p>
         </div>
-    </form>
+
+        <form method="POST">
+            {% csrf_token %}
+            {{ form|crispy }}
+
+            <div class="d-flex flex-column align-items-center gap-3 mt-4">
+                <button class="btn w-100" type="submit">
+                    <i class="fas fa-sign-in-alt me-2"></i>Login
+                </button>
+                <div class="text-center">
+                    <span class="text-muted">Don't have an account?</span>
+                    <a href="{% url 'register' %}" class="ms">Register here</a>
+                </div>
+            </div>
+        </form>
+    </div>
 </div>
 {% endblock %}

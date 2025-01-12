@@ -2,35 +2,96 @@
 {% load crispy_forms_tags %}
 {% load crispy_forms_filters %}
 {% block content %}
-<div class="container mt-4">
-    <h2>Reviewing {{ assignment.title }}</h2>
-    <form method="POST" class="form-control">
-        {% csrf_token %}
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Criterion</th>
-                    <th>Description</th>
-                    <th>Max Points</th>
-                    <th>Score</th>
-                </tr>
-            </thead>
-            <tbody>
+<div class="container py-4">
+    <div class="detail-card">
+        <div class="mb-4">
+            <h1 class="mb-1">Submit Review</h1>
+            <p class="text-muted">You are reviewing: {{ assignment.title }}</p>
+        </div>
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <!-- Rubric Scoring Section -->
+            <div class="row g-4 mb-4">
                 {% for detail in rubric_details %}
-                    <tr>
-                        <td>{{ detail.criterion }}</td>
-                        <td>{{detail.description}}</td>
-                        <td>{{ detail.max_points }}</td>
-                        <td>
-                            <input type="number" name="{{ detail.criterion }}" min="0" max="{{ detail.max_points }}" required>
-                        </td>
-                    </tr>
+                <div class="col-md-6">
+                    <div class="criterion-card">
+                        <div class="criterion-header mb-3">
+                            <h5>{{ detail.criterion }}</h5>
+                        </div>
+                        <p class="text-muted mb-3">{{ detail.description }}</p>
+                        <div class="score-input">
+                            <label class="form-label">Score (max: {{ detail.max_points }})</label>
+                            <input type="number"
+                                   name="{{ detail.criterion }}"
+                                   class="form-control"
+                                   min="0"
+                                   max="{{ detail.max_points }}"
+                                   required
+                                   oninput="updateProgress(this, {{ detail.max_points }}, '{{ detail.criterion }}')"
+                            >
+                            <div class="progress mt-2" style="height: 8px;">
+                                <div class="progress-bar"
+                                     id="progress-{{ detail.criterion }}"
+                                     role="progressbar"
+                                     style="width: 0%">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 {% endfor %}
-            </tbody>
-        </table>
-        <textarea name="feedback" placeholder="Enter your feedback here" required class="input-group-text"></textarea>
-        <button type="submit" class="btn">Submit Review</button>
-    </form>
-    <a href="{% url 'detail' assignment.id %}" class="rtd btn">Back</a>
+            </div>
+
+            <!-- Feedback Section -->
+            <div class="feedback-card">
+                <h4 class="mb-3">Feedback</h4>
+                <textarea name="feedback"
+                          class="form-control"
+                          rows="4"
+                          placeholder="Enter your detailed feedback here..."
+                          required></textarea>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="d-flex justify-content-between align-items-center mt-4">
+                <a href="{% url 'detail' assignment.pk %}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Back
+                </a>
+                <button type="submit" class="btn">
+                    <i class="fas fa-paper-plane me-2"></i>Submit Review
+                </button>
+            </div>
+        </form>
+    </div>
 </div>
+
+<script>
+function updateProgress(input, maxPoints, criterionId) {
+    const value = parseInt(input.value) || 0;
+    const percentage = (value / maxPoints) * 100;
+    const progressBar = document.getElementById(`progress-${criterionId}`);
+
+    // Update progress bar width
+    progressBar.style.width = `${percentage}%`;
+
+    // Update progress bar color based on score
+    if (percentage < 70) {
+        progressBar.className = 'progress-bar bg-danger';
+    } else if (percentage < 80) {
+        progressBar.className = 'progress-bar bg-warning';
+    } else if (percentage < 90) {
+        progressBar.className = 'progress-bar bg-success bg-opacity-75';
+    } else {
+        progressBar.className = 'progress-bar bg-success';
+    }
+
+    // Validate input
+    if (value > maxPoints) {
+        input.value = maxPoints;
+        updateProgress(input, maxPoints, criterionId);
+    }
+}
+</script>
 {% endblock %}

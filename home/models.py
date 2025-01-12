@@ -19,6 +19,7 @@ class Assignment(models.Model):
     rubric = models.JSONField(default=dict)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     date_uploaded = models.DateTimeField(auto_now_add=True)
+    is_published = models.BooleanField(default=False)
 
     def __str__(self):
         return self.title

@@ -1,16 +1,27 @@
-from calendar import c
-from webbrowser import get
+from django.contrib import messages
 from django.shortcuts import get_object_or_404, render, redirect
-from django.db.models import Avg
+from django.db.models import Q
 from django.contrib.auth.decorators import login_required
-from pip._vendor.msgpack import ext
 from .forms import AssignmentForm, RubricForm
 from django.forms import formset_factory
 from .models import Assignment, Review
 
-def assignment_list(request):
+def home(request):
+    query = request.GET.get('filter', '')
     assignments = Assignment.objects.all().order_by('-date_uploaded')
-    return render(request, 'home/home.html', {'assignments': assignments})
+    assignments = assignments.filter(is_published=True)
+
+    if query:
+        assignments = assignments.filter(
+            Q(title__icontains=query) |
+            Q(course__icontains=query) |
+            Q(author__username__icontains=query)
+        )
+
+    return render(request, 'home/home.html', {
+        'assignments': assignments,
+        'query': query,
+    })
 
 @login_required
 def upload_assignment(request):
@@ -46,8 +57,12 @@ def define_rubric(request, pk):
                     rubric[criterion] = {"description": description, "max_points": max_points}
 
             assignment.rubric = rubric
+            assignment.is_published = True
             assignment.save()
-            return redirect('home')
+            return redirect('detail', pk=pk)
+        else:
+            assignment.delete()
+            return redirect('upload_assignment')
     else:
         rubric_formset = RubricFormSet()
 
@@ -59,6 +74,10 @@ def define_rubric(request, pk):
 @login_required
 def SubmitReview(request, pk):
     assignment = get_object_or_404(Assignment, pk=pk)
+    if not assignment.is_published:
+        messages.warning(request, 'This assignment is not published yet.')
+        return redirect('home')
+
     rubric_details = []
 
     if request.method == 'POST':
@@ -100,6 +119,10 @@ def SubmitReview(request, pk):
 
 def DetailView(request, pk):
     assignment = get_object_or_404(Assignment, pk=pk)
+    if not assignment.is_published:
+        messages.warning(request, 'This assignment is not published yet.')
+        return redirect('home')
+
     reviews = assignment.reviews.all() # type: ignore
     rubric_details = []
 
@@ -136,27 +159,32 @@ def ReviewDetail(request, pk):
         'rubric_details': rubric_details,
     })
 
-from django.shortcuts import get_object_or_404, render, redirect
-from django.contrib.auth.decorators import login_required
-
-# Add these new views:
 
 @login_required
 def update_assignment(request, pk):
     assignment = get_object_or_404(Assignment, pk=pk)
+    if not assignment.is_published:
+        messages.warning(request, 'This assignment is not published yet.')
+        return redirect('home')
     if request.method == 'POST':
         assignment_form = AssignmentForm(request.POST, request.FILES, instance=assignment)
+        assignment_form.fields.pop('num_criteria')
         if assignment_form.is_valid():
-            assignment.num_criteria = assignment_form.cleaned_data['num_criteria']
-            assignment_form.save()
-            return redirect('update_rubric', pk=pk)
+            updated_assignment = assignment_form.save(commit=False)
+            updated_assignment.num_criteria = assignment.num_criteria
+            updated_assignment.save()
+            return redirect('detail', pk=pk)
     else:
         assignment_form = AssignmentForm(instance=assignment)
+        assignment_form.fields.pop('num_criteria')
     return render(request, 'home/update_assignment.html', {'form': assignment_form})
 
 @login_required
 def delete_assignment(request, pk):
     assignment = get_object_or_404(Assignment, pk=pk)
+    if not assignment.is_published:
+        messages.warning(request, 'This assignment is not published yet.')
+        return redirect('home')
     if request.method == 'POST':
         assignment.delete()
         return redirect('home')
@@ -165,17 +193,21 @@ def delete_assignment(request, pk):
 @login_required
 def update_rubric(request, pk):
     assignment = get_object_or_404(Assignment, pk=pk)
-    RubricFormSet = formset_factory(RubricForm, extra=0)  # type: ignore
+    if not assignment.is_published:
+        messages.warning(request, 'This assignment is not published yet.')
+        return redirect('home')
+
+    RubricFormSet = formset_factory(RubricForm, extra=0) # type: ignore
 
     if request.method == 'POST':
         rubric_formset = RubricFormSet(request.POST)
         if rubric_formset.is_valid():
             rubric = {}
-            for form in rubric_formset:
+            for form, (old_criterion, old_details) in zip(rubric_formset, assignment.rubric.items()):
                 if form.cleaned_data:
                     criterion = form.cleaned_data['criterion']
                     description = form.cleaned_data['description']
-                    max_points = form.cleaned_data['max_points']
+                    max_points = old_details['max_points']
                     rubric[criterion] = {
                         "description": description,
                         "max_points": max_points

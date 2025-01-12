@@ -24,11 +24,12 @@ from django.conf import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', home_views.assignment_list, name='home'),
+    path('', home_views.home, name='home'),
 
     path('login/', auth_views.LoginView.as_view(template_name='users/login.html'), name='login'),
     path('logout/', user_views.logout_view, name='logout'),
     path('register/', user_views.register_view, name='register'),
+    path('dashboard/', user_views.dashboard, name='dashboard'),
 
     path('upload_assignment/', home_views.upload_assignment, name='upload_assignment'),
     path('assignment/<int:pk>/', home_views.DetailView, name='detail'),

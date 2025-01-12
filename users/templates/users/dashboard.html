@@ -1,0 +1,71 @@
+{% extends 'home/base.html' %}
+{% block content %}
+<div class="container-fluid ps-5 py-3">
+    <h1 class="ps-4 pb-2">Dashboard</h1>
+    <div class="row column-gap-lg-5 ps-3">
+        <div class="col-md-7">
+            <div class="stat-card mx-1">
+                <h2>{{ stats.num_assignments }}</h3>
+                <p class="h5 mb-0">Assignments Uploaded</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card mx-1">
+                <h2>{{ stats.num_reviews }}</h3>
+                <p class="h5 mb-0">Reviews Written</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 column-gap-lg-5 ps-3">
+        <div class="col-md-7">
+            <div class="dashboard-card mx-1">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4 class="mb-0">Your Recent Assignments</h4>
+                    <a href="{% url 'upload_assignment' %}" class="btn btn-sm">
+                        <i class="fas fa-plus me-1"></i>New Assignment
+                    </a>
+                </div>
+                {% for assignment in assignments %}
+                <a href="{% url 'detail' assignment.pk %}" class="quick-action d-block text-decoration-none text-dark">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="mb-1">{{ assignment.title }}</h6>
+                            <small class="text-muted">{{ assignment.date_uploaded|date:"M d, Y" }}</small>
+                        </div>
+                        <span class="badge bg-primary">{{ assignment.reviews.count }} reviews</span>
+                    </div>
+                </a>
+                {% empty %}
+                <p class="text-muted text-center">No assignments yet</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="dashboard-card mx-1">
+                <h4 class="mb-4">Recent Reviews</h4>
+                {% for review in reviews %}
+                <a href="{% url 'review_detail' review.pk %}" class="quick-action d-block text-decoration-none text-dark">
+                    <h6 class="mb-1">{{ review.assignment.title }}</h6>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <small class="text-muted">{{ review.date_reviewed|date:"M d, Y" }}</small>
+                        {% if review.final_percent < 70 %}
+                            <span class="badge bg-danger">{{ review.final_percent|floatformat:0 }}%</span>
+                        {% elif review.final_percent < 80 %}
+                            <span class="badge bg-warning">{{ review.final_percent|floatformat:0 }}%</span>
+                        {% elif review.final_percent < 90 %}
+                            <span class="badge bg-success bg-opacity-75">{{ review.final_percent|floatformat:0 }}%</span>
+                        {% else %}
+                            <span class="badge bg-success">{{ review.final_percent|floatformat:0 }}%</span>
+                        {% endif %}
+                    </div>
+                </a>
+                {% empty %}
+                <p class="text-muted text-center">No reviews yet</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
