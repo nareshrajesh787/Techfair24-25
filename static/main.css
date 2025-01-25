@@ -49,6 +49,8 @@
     background: var(--white);
     border-radius: 12px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
     padding: 24px;
     margin-bottom: 24px;
   }

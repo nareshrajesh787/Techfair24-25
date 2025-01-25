@@ -48,6 +48,11 @@ def upload_assignment(request):
         if assignment_form.is_valid():
             assignment = assignment_form.save(commit=False)
             assignment.author = request.user
+
+            if 'uploaded_assignment' in request.FILES:
+                file = request.FILES['uploaded_assignment']
+                assignment.uploaded_assignment = f'assignments/{file.name}'
+
             assignment.num_criteria = assignment_form.cleaned_data['num_criteria']
             assignment.save()
             return redirect('define_rubric', pk=assignment.pk)

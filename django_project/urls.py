@@ -44,7 +44,6 @@ urlpatterns = [
     path('review/<int:pk>/update/', home_views.update_review, name='update_review'),
     path('review/<int:pk>/delete/', home_views.delete_review, name='delete_review'),
 
-]
-
-if settings.DEBUG:
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    path('static/media/<path:path>', serve, {'document_root': settings.MEDIA_ROOT}),
+    
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
