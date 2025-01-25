@@ -2,7 +2,6 @@
 {% block content %}
 <div class="container py-5">
 
-    <!-- Assignment Header -->
     <div class="detail-card">
         <div class="d-flex justify-content-between align-items-start">
             <div>
@@ -30,13 +29,16 @@
         </div>
 
         <div class="row">
-            <a href="{{ assignment.uploaded_assignment.url }}" target="_blank" class="btn">
-                <i class="fas fa-folder-open me-2"></i>View Assignment
-            </a>
+            {% if assignment.uploaded_assignment %}
+                <a href="{{ assignment.uploaded_assignment.url }}" target="_blank" class="btn">
+                    <i class="fas fa-folder-open me-2"></i>View Assignment File
+                </a>
+            {% else %}
+                <p class="text-muted">No assignment file uploaded.</p>
+            {% endif %}
         </div>
     </div>
 
-    <!-- Rubric Section -->
     <div class="detail-card">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h2 class="mb-0">Rubric</h2>
@@ -66,7 +68,15 @@
         </table>
     </div>
 
-    <!-- Reviews Section -->
+    {% if ai_analysis %}
+    <div class="detail-card mb-4">
+        <h3 class="mb-3">AI Analysis</h3>
+        <div class="ai-analysis">
+            {{ ai_analysis|linebreaks }}
+        </div>
+    </div>
+    {% endif %}
+
     <div class="detail-card">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2 class="mb-0">Reviews</h2>
@@ -109,5 +119,15 @@
             {% endfor %}
         </div>
     </div>
+
+    {% if review_summary %}
+    <div class="detail-card mb-4">
+        <h3 class="mb-3">Review Summary</h3>
+        <div class="review-summary">
+            {{ review_summary|linebreaks }}
+        </div>
+    </div>
+    {% endif %}
+
 </div>
 {% endblock %}

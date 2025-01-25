@@ -113,6 +113,13 @@
     border-bottom-left-radius: 0;
   }
 
+  .ai-analysis, .review-summary {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 8px;
+    border-left: 4px solid var(--primary);
+  }
+
   .card:hover {
     transform: translateY(-5px);
     box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
@@ -183,12 +190,17 @@
     border-radius: 0 0 6px 6px;
     background-color: #072453;
     box-shadow: 8px 8px 13px rgba(56,56,56,0.1)!important;
+    transition: ease-in-out 0.9s;
   }
 
   .navbar-brand {
     color: var(--white) !important;
     font-weight: bolder;
     font-size: 26px;
+  }
+
+  .navbar-brand:hover {
+    color: var(--accent) !important;
   }
 
   .nav-link {
@@ -345,4 +357,13 @@
   .badge {
       background: var(--accent);
       font-size: 0.8rem;
+  }
+
+  .filter-form .collapse {
+    transition: all 0.3s ease;
+  }
+
+  .filter-form .btn-secondary:hover {
+    background-color: var(--background);
+    border-color: var(--primary);
   }

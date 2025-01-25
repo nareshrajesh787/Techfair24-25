@@ -7,11 +7,9 @@
             <h1 class="mb-1">Update Review</h1>
             <p class="text-muted">Edit your review for {{ assignment.title }}</p>
         </div>
-
+        
         <form method="POST">
             {% csrf_token %}
-
-            <!-- Rubric Scoring Section -->
             <div class="row g-4 mb-4">
                 {% for detail in rubric_details %}
                 <div class="col-md-6">
@@ -44,7 +42,6 @@
                 {% endfor %}
             </div>
 
-            <!-- Feedback Section -->
             <div class="feedback-card">
                 <h4 class="mb-3">Feedback</h4>
                 <textarea name="feedback"
@@ -53,7 +50,6 @@
                           required>{{ review.feedback }}</textarea>
             </div>
 
-            <!-- Action Buttons -->
             <div class="d-flex justify-content-between align-items-center mt-4">
                 <a href="javascript:history.back()" class="btn btn-secondary">
                     <i class="fas fa-arrow-left me-2"></i>Back
@@ -90,7 +86,6 @@ function updateProgress(input, maxPoints, criterionId) {
     }
 }
 
-// Initialize progress bars on load
 window.onload = function() {
     {% for detail in rubric_details %}
         updateProgress(

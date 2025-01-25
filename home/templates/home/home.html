@@ -13,14 +13,63 @@
       </div>
   </div>
 
-  <div class="row mb-4">
-      <div class="col">
-          <form method="GET" action="{% url 'home' %}" class="d-flex">
-              <input type="text" name="filter" value="{{ query }}" placeholder="Search assignments..." class="form-control me-2">
-              <button type="submit" class="btn">Search</button>
-          </form>
-      </div>
-  </div>
+  <div class="detail-card mb-4 pb-2">
+    <form method="GET" class="filter-form">
+        <div class="row g-3">
+
+            <div class="col-md-10">
+                <div class="input-group">
+                    <input type="text" name="search" value="{{ request.GET.search }}"
+                           class="form-control" placeholder="Search assignments...">
+                    <button class="btn" type="submit">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="col-md-2 mt-3 pt-1">
+                <button class="btn btn-secondary" type="button"
+                        data-bs-toggle="collapse" data-bs-target="#filterOptions">
+                    <i class="fas fa-filter me-2"></i>Advanced Filters
+                </button>
+            </div>
+
+            <div class="collapse" id="filterOptions">
+                <div class="row g-3 mt-1 justify-content-evenly">
+                    <div class="col-md-4">
+                        <label class="form-label">Assignment Type</label>
+                        <select name="type" class="form-select">
+                            <option value="">All Types</option>
+                            {% for type, label in assignment_types %}
+                                <option value="{{ type }}" {% if request.GET.type == type %}selected{% endif %}>
+                                    {{ label }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label">Course</label>
+                        <select name="course" class="form-select">
+                            <option value="">All Courses</option>
+                            {% for course in courses %}
+                                <option value="{{ course }}" {% if request.GET.course == course %}selected{% endif %}>
+                                    {{ course }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="col-12 text-end">
+                        <a href="{% url 'home' %}" class="btn btn-secondary">Clear Filters</a>
+                        <button type="submit" class="btn">Apply Filters</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
 
   <div class="row g-4">
       {% for assignment in assignments %}

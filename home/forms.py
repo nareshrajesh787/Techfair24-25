@@ -7,7 +7,7 @@ class AssignmentForm(forms.ModelForm):
         model = Assignment
         fields = [
             'title', 'description', 'course',
-            'assignment_type', 'uploaded_assignment', 'num_criteria'
+            'assignment_type', 'uploaded_assignment' ,'num_criteria'
         ]
         widgets = {
             'description': forms.Textarea(attrs={'rows': 4}),

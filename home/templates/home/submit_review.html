@@ -12,7 +12,6 @@
         <form method="POST">
             {% csrf_token %}
 
-            <!-- Rubric Scoring Section -->
             <div class="row g-4 mb-4">
                 {% for detail in rubric_details %}
                 <div class="col-md-6">
@@ -44,7 +43,6 @@
                 {% endfor %}
             </div>
 
-            <!-- Feedback Section -->
             <div class="feedback-card">
                 <h4 class="mb-3">Feedback</h4>
                 <textarea name="feedback"
@@ -54,7 +52,6 @@
                           required></textarea>
             </div>
 
-            <!-- Action Buttons -->
             <div class="d-flex justify-content-between align-items-center mt-4">
                 <a href="{% url 'detail' assignment.pk %}" class="btn btn-secondary">
                     <i class="fas fa-arrow-left me-2"></i>Back
@@ -73,10 +70,8 @@ function updateProgress(input, maxPoints, criterionId) {
     const percentage = (value / maxPoints) * 100;
     const progressBar = document.getElementById(`progress-${criterionId}`);
 
-    // Update progress bar width
     progressBar.style.width = `${percentage}%`;
 
-    // Update progress bar color based on score
     if (percentage < 70) {
         progressBar.className = 'progress-bar bg-danger';
     } else if (percentage < 80) {
@@ -87,7 +82,6 @@ function updateProgress(input, maxPoints, criterionId) {
         progressBar.className = 'progress-bar bg-success';
     }
 
-    // Validate input
     if (value > maxPoints) {
         input.value = maxPoints;
         updateProgress(input, maxPoints, criterionId);

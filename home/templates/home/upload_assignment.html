@@ -22,11 +22,16 @@
                 </div>
             </div>
 
-            <div class="upload-section p-4 my-4 rounded">
-                <div class="d-flex align-items-center">
-                    <i class="fas fa-cloud-upload-alt fa-2x me-3 text-primary"></i>
-                    <div>
-                        {{ assignment_form.uploaded_assignment|as_crispy_field }}
+            <div class="assignment-content mb-4">
+                <h5>Assignment Content</h5>
+                <p class="text-muted small">Choose one of the following options:</p>
+
+                <div class="upload-section p-4 my-4 rounded">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-cloud-upload-alt fa-2x me-3 text-primary"></i>
+                        <div>
+                            {{ assignment_form.uploaded_assignment|as_crispy_field }}
+                        </div>
                     </div>
                 </div>
             </div>

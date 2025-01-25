@@ -17,9 +17,10 @@
   <body class="sarala-regular">
     <nav class="navbar navbar-expand-sm sticky-top mb-4">
       <div class="container-fluid">
-        <a class="navbar-brand ps-3 mb-1" href="{% url 'home' %}"> Happenings </a>
+        <a class="navbar-brand ps-3 mb-1" href="{% url 'home' %}"> PeerPoint </a>
         <div class="navbar-nav">
           {% if user.is_authenticated %}
+          <a class="nav-link mx-2 my-1"> Hey {{ user.username }}! </a>
           <a class="nav-link mx-2 my-1" href="{% url 'home' %}"> Home </a>
           <a class="nav-link mx-2 my-1" href="{% url 'dashboard' %}"> Dashboard </a>
           <a class="nav-link mx-2 my-1" href="{% url 'logout' %}"> Logout </a>

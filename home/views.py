@@ -5,23 +5,41 @@ from django.contrib.auth.decorators import login_required
 from .forms import AssignmentForm, RubricForm
 from django.forms import formset_factory
 from .models import Assignment, Review
+from .ai_utils import AIAssistant
+from django.utils import timezone
+from datetime import timedelta
+from .utils import extract_file_content
 
 def home(request):
-    query = request.GET.get('filter', '')
-    assignments = Assignment.objects.all().order_by('-date_uploaded')
-    assignments = assignments.filter(is_published=True)
+    assignments = Assignment.objects.filter(is_published=True).order_by('-date_uploaded')
 
-    if query:
+    search_query = request.GET.get('search', '')
+    if search_query:
         assignments = assignments.filter(
-            Q(title__icontains=query) |
-            Q(course__icontains=query) |
-            Q(author__username__icontains=query)
+            Q(title__icontains=search_query) |
+            Q(description__icontains=search_query) |
+            Q(course__icontains=search_query) |
+            Q(author__username__icontains=search_query)
         )
 
-    return render(request, 'home/home.html', {
+    assignment_type = request.GET.get('type', '')
+    if assignment_type:
+        assignments = assignments.filter(assignment_type=assignment_type)
+
+    course = request.GET.get('course', '')
+    if course:
+        assignments = assignments.filter(course=course)
+
+    courses = Assignment.objects.values_list('course', flat=True).distinct()
+
+    context = {
         'assignments': assignments,
-        'query': query,
-    })
+        'assignment_types': Assignment.TYPE_CHOICES,
+        'courses': courses,
+        'search_query': search_query,
+    }
+
+    return render(request, 'home/home.html', context)
 
 @login_required
 def upload_assignment(request):
@@ -117,6 +135,8 @@ def SubmitReview(request, pk):
     print(rubric_details)
     return render(request, 'home/submit_review.html', {'assignment':assignment, 'rubric_details': rubric_details,})
 
+
+ai_assistant = AIAssistant()
 def DetailView(request, pk):
     assignment = get_object_or_404(Assignment, pk=pk)
     if not assignment.is_published:
@@ -125,6 +145,31 @@ def DetailView(request, pk):
 
     reviews = assignment.reviews.all() # type: ignore
     rubric_details = []
+
+    content = None
+    ai_analysis = None
+    if assignment.uploaded_assignment:
+        content = extract_file_content(assignment.uploaded_assignment)
+        if content and not content.startswith('Error'):
+            ai_analysis = ai_assistant.analyze_assignment(
+                assignment.title,
+                assignment.description,
+                content,
+                assignment.rubric,
+                assignment.id, # type: ignore
+            )
+
+    ai_analysis = ai_assistant.analyze_assignment(
+        assignment.title,
+        assignment.description,
+        content,
+        assignment.rubric,
+        assignment.id, # type: ignore
+    )
+    if reviews.count() >= 2:
+        review_summary = ai_assistant.summarize_reviews(reviews, assignment.id) # type: ignore
+    else:
+        review_summary = None
 
     for criterion, details in assignment.rubric.items():
             rubric_details.append({
@@ -137,6 +182,8 @@ def DetailView(request, pk):
         'assignment': assignment,
         'reviews': reviews,
         'rubric_details': rubric_details,
+        'ai_analysis': ai_analysis,
+        'review_summary': review_summary,
     })
 
 def ReviewDetail(request, pk):
@@ -166,12 +213,16 @@ def update_assignment(request, pk):
     if not assignment.is_published:
         messages.warning(request, 'This assignment is not published yet.')
         return redirect('home')
+
     if request.method == 'POST':
         assignment_form = AssignmentForm(request.POST, request.FILES, instance=assignment)
         assignment_form.fields.pop('num_criteria')
         if assignment_form.is_valid():
+            ai_assistant.invalidate_cache(assignment.id) # type: ignore
             updated_assignment = assignment_form.save(commit=False)
             updated_assignment.num_criteria = assignment.num_criteria
+            if not request.FILES.get('uploaded_assignment'):
+                updated_assignment.uploaded_assignment = assignment.uploaded_assignment
             updated_assignment.save()
             return redirect('detail', pk=pk)
     else:
@@ -246,7 +297,7 @@ def update_review(request, pk):
         for criterion, details in assignment.rubric.items():
             max_points = details.get('max_points', 0)
             score = int(request.POST.get(criterion, 0))
-            rubric_scores[criterion] = score  # Fixed: using criterion as key instead of string 'criterion'
+            rubric_scores[criterion] = score
             total_score += score
             max_total += max_points
 

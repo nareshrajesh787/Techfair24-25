@@ -7,7 +7,10 @@ class Assignment(models.Model):
         ('Essay', 'Essay'),
         ('Lab Report', 'Lab Report'),
         ('Presentation', 'Presentation'),
-        ('Narrative', 'Narrative')
+        ('Narrative', 'Narrative'),
+        ('Classwork', 'Classwork'),
+        ('Project', 'Project'),
+        ('Other', 'Other'),
     ]
 
     title = models.CharField(max_length=200)

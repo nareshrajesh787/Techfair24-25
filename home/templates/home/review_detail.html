@@ -2,7 +2,6 @@
 {% load custom_filters %}
 {% block content %}
 <div class="container py-5">
-    <!-- Review Header -->
     <div class="review-header">
         <div class="d-flex justify-content-between align-items-start">
             <div>
@@ -18,7 +17,6 @@
         </div>
     </div>
 
-    <!-- Action Buttons -->
     {% if user == review.reviewer %}
     <div class="mb-4 text-end">
         <a href="{% url 'update_review' review.pk %}" class="btn me-2">
@@ -30,7 +28,6 @@
     </div>
     {% endif %}
 
-    <!-- Rubric Scores -->
     <div class="row g-4">
         {% for detail in rubric_details %}
         <div class="col-md-6">
@@ -68,7 +65,6 @@
         {% endfor %}
     </div>
 
-    <!-- Feedback Section -->
     <div class="feedback-card">
         <h4 class="mb-4">Feedback</h4>
         <div class="description-text">
@@ -76,7 +72,6 @@
         </div>
     </div>
 
-    <!-- Back Button -->
     <div class="text-center mt-4">
         <a href="{% url 'detail' assignment.pk %}" class="btn">
             <i class="fas fa-arrow-left me-2"></i>Back to Assignment
