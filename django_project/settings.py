@@ -27,9 +27,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-4ju2n@$f9d0c=h)_g0lbb%k9&@rf(xa$d$g$&5ri$uf)*gev^4'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = [".replit.dev", ".replit.app", "127.0.0.1"]
+ALLOWED_HOSTS = [".replit.dev", ".replit.app", "127.0.0.1", 'techfair24-25.onrender.com']
 CSRF_TRUSTED_ORIGINS = ["https://*.replit.dev", "https://*.replit.app", "https://952557ec-b25b-4ed9-b6dc-35bc2c96babd-00-3kzv4n852ki40.picard.replit.dev:8000"]
 
 # Application definition
@@ -54,6 +54,7 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 # Only use clickjacking protection in deployments because the Development Web View uses
@@ -135,6 +136,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
