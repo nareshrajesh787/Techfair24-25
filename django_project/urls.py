@@ -43,4 +43,10 @@ urlpatterns = [
     path('review/<int:pk>/update/', home_views.update_review, name='update_review'),
     path('review/<int:pk>/delete/', home_views.delete_review, name='delete_review'),
 
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+else:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
